@@ -1,4 +1,4 @@
-import { swatch, fileIcon, ai, logoShirt, stylishShirt } from "../assets";
+import { swatch, fileIcon, ai, logoShirt, stylishShirt, tshirt_male, tshirt_female, hoodie, dress } from "../assets";
 
 export const EditorTabs = [
   {
@@ -36,3 +36,23 @@ export const DecalTypes = {
     filterTab: "stylishShirt",
   },
 };
+
+
+export const ProductTypes = [
+  {
+    name: "productpicker_tshirtmale",
+    icon: tshirt_male,
+  },
+  {
+    name: "productpicker_tshirtfemale",
+    icon: tshirt_female,
+  },
+  {
+    name: "productpicker_hoodie",
+    icon: hoodie,
+  },
+  {
+    name: "productpicker_dress",
+    icon: dress,
+  },
+];

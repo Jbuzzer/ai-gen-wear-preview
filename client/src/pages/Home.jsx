@@ -17,27 +17,24 @@ const Home = () => {
     <AnimatePresence>
       {snap.intro && (
         <motion.section className="home" {...slideAnimation('left')}>
-            <motion.header {...slideAnimation('down')}>
-                <img 
-                src='./aigenwear_logo_color.png'
-                alt="logo"
-                className="w-20 h-20 object-contain absolute top-1 left-10 z-10"
-                />
+            <motion.header>
+            <a href="https://aigenwear.com"><img 
+              src='./aigenwear_logo_color.png'
+              alt="logo"
+              className="w-20 h-20 object-contain absolute top-1 left-0 z-10"
+              /></a>
             </motion.header>
 
           <motion.div className="home-content" {...headContainerAnimation}>
             <motion.div {...headTextAnimation}>
               <h1 className="head-text">
-                LET'S <br className="xl:block hidden" /> DO IT.
+                Product <br className="xl:block hidden" /> Designer
               </h1>
             </motion.div>
             <motion.div
               {...headContentAnimation}
               className="flex flex-col gap-5"
             >
-              <p className="max-w-md font-normal text-gray-600 text-base">
-              Create your unique and exclusive shirt with our brand-new 3D customization tool. <strong>Unleash your imagination</strong>{" "} and define your own style.
-              </p>
 
               <CustomButton 
                 type="filled"

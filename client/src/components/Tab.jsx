@@ -2,13 +2,14 @@ import React from 'react'
 import { useSnapshot } from 'valtio'
 
 import state from '../store';
+import { getContrastingColor } from '../config/helpers';
 
 const Tab = ({ tab, isFilterTab, isActiveTab, handleClick }) => {
   const snap = useSnapshot(state);
 
   const activeStyles = isFilterTab && isActiveTab 
-    ? { backgroundColor: snap.color, opacity: 0.5 }
-    : { backgroundColor: "transparent", opacity: 1 }
+    ? { backgroundColor: snap.color, opacity: 1, borderColor: getContrastingColor(snap.color) }
+    : { backgroundColor: "transparent", opacity: 0.7 }
 
   return (
     <div

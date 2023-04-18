@@ -6,18 +6,18 @@ import config from '../config/config';
 import state from '../store';
 import { download } from '../assets';
 import { downloadCanvasToImage, reader } from '../config/helpers';
-import { EditorTabs, FilterTabs, DecalTypes } from '../config/constants';
+import { EditorTabs, FilterTabs, DecalTypes, ProductTypes } from '../config/constants';
 import { fadeAnimation, slideAnimation } from '../config/motion';
-import { AIPicker, ColorPicker, CustomButton, FilePicker, Tab } from '../components';
+import { AIPicker, ColorPicker, CustomButton, FilePicker, ProductPicker_TshirtMale, ProductPicker_TshirtFemale, ProductPicker_Hoodie, ProductPicker_Dress, Tab } from '../components';
 
 const Customizer = () => {
   const snap = useSnapshot(state);
 
   const [file, setFile] = useState('');
-
   const [prompt, setPrompt] = useState('');
   const [generatingImg, setGeneratingImg] = useState(false);
 
+  const [activeProductTab, setActiveProductType] = useState("");
   const [activeEditorTab, setActiveEditorTab] = useState("");
   const [activeFilterTab, setActiveFilterTab] = useState({
     logoShirt: true,
@@ -30,47 +30,27 @@ const Customizer = () => {
       case "colorpicker":
         return <ColorPicker />
       case "filepicker":
-        return <FilePicker
-          file={file}
-          setFile={setFile}
-          readFile={readFile}
-        />
+        return <FilePicker />
       case "aipicker":
-        return <AIPicker 
-          prompt={prompt}
-          setPrompt={setPrompt}
-          generatingImg={generatingImg}
-          handleSubmit={handleSubmit}
-        />
-      default:
+        return <AIPicker />
+          default:
         return null;
     }
   }
 
-  const handleSubmit = async (type) => {
-    if(!prompt) return alert("Please enter a prompt");
-
-    try {
-      setGeneratingImg(true);
-
-      const response = await fetch('http://localhost:8080/api/v1/dalle', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          prompt,
-        })
-      })
-
-      const data = await response.json();
-
-      handleDecals(type, `data:image/png;base64,${data.photo}`)
-    } catch (error) {
-      alert(error)
-    } finally {
-      setGeneratingImg(false);
-      setActiveEditorTab("");
+  // show tab content depending on the activeTab
+  const generateProductContent = () => {
+    switch (activeProductTab) {
+      case "productpicker_tshirtmale":
+        return <ProductPicker_TshirtMale />
+      case "productpicker_tshirtfemale":
+        return <ProductPicker_TshirtFemale />
+      case "productpicker_hoodie":
+        return <ProductPicker_Hoodie  />
+      case "productpicker_dress":
+        return <ProductPicker_Dress />        
+    default:
+        return null;
     }
   }
 
@@ -88,11 +68,17 @@ const Customizer = () => {
     switch (tabName) {
       case "logoShirt":
           state.isLogoTexture = !activeFilterTab[tabName];
-        break;
+          setActiveEditorTab("");
+          setActiveProductType("");
+          break;
       case "stylishShirt":
           state.isFullTexture = !activeFilterTab[tabName];
-        break;
+          setActiveEditorTab("");
+          setActiveProductType("");
+          break;
       default:
+        setActiveEditorTab("");
+        setActiveProductType("");
         state.isLogoTexture = true;
         state.isFullTexture = false;
         break;
@@ -108,27 +94,19 @@ const Customizer = () => {
     })
   }
 
-  const readFile = (type) => {
-    reader(file)
-      .then((result) => {
-        handleDecals(type, result);
-        setActiveEditorTab("");
-      })
-  }
-
   return (
     <AnimatePresence>
       {!snap.intro && (
         <>
-          <motion.header {...slideAnimation('down')}>
-              <img 
+          <motion.header>
+              <a href="https://aigenwear.com" className="logo"><img 
               src='./aigenwear_logo_color.png'
               alt="logo"
-              className="w-20 h-20 object-contain absolute top-1 left-10 z-10"
-              />
+              className="w-20 h-20 object-contain absolute top-1 left-0 z-20"
+              /></a>
           </motion.header>        
           <motion.div
-            key="custom"
+            key="custom1"
             className="absolute top-0 left-0 z-10"
             {...slideAnimation('left')}
           >
@@ -172,6 +150,26 @@ const Customizer = () => {
                 handleClick={() => handleActiveFilterTab(tab.name)}
               />
             ))}
+          </motion.div>
+
+          <motion.div
+            key="custom"
+            className="absolute top-0 right-0 z-10"
+            {...slideAnimation('right')}
+          >
+            <div className="flex items-center min-h-screen">
+              <div className="producttabs-container tabs">
+                {ProductTypes.map((tab) => (
+                  <Tab 
+                    key={tab.name}
+                    tab={tab}
+                    handleClick={() => setActiveProductType(tab.name)}
+                  />
+                ))}
+                {generateProductContent()}
+
+              </div>
+            </div>
           </motion.div>
         </>
       )}
